@@ -111,7 +111,8 @@ class custom_build_ext(build_ext):
         build_dir = self.get_ext_fullpath(ext_name).replace(self.get_ext_filename(ext_name), '')
         build_dir = os.path.abspath(build_dir)
 
-        cmake_args = ['-DCMAKE_BUILD_TYPE=' + config,
+        cmake_args = [os.environ["CMAKE_ARGS"],
+                      '-DCMAKE_BUILD_TYPE=' + config,
                       '-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}'.format(config.upper(), build_dir),
                       '-DPYTHON_EXECUTABLE:FILEPATH=' + sys.executable]
 
