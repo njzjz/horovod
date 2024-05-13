@@ -27,6 +27,7 @@ import textwrap
 
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
+from wheel.bdist_wheel import bdist_wheel
 
 from tensorflow import __version__ as tf_version
 
@@ -213,6 +214,16 @@ def get_package_version():
     return __version__ + "+" + os.environ['HOROVOD_LOCAL_VERSION'] if 'HOROVOD_LOCAL_VERSION' in os.environ else __version__
 
 
+class bdist_wheel_abi3(bdist_wheel):
+    def get_tag(self):
+        python, abi, plat = super().get_tag()
+
+        if python.startswith("cp"):
+            # on CPython, our wheels are abi3 and compatible back to 3.6
+            return "cp36", "abi3", plat
+
+        return python, abi, plat
+
 setup(name='horovod',
       version=get_package_version(),
       packages=find_packages(),
@@ -231,7 +242,7 @@ setup(name='horovod',
           'Topic :: Scientific/Engineering :: Artificial Intelligence',
       ],
       ext_modules=[tensorflow_mpi_lib, torch_mpi_lib_v2, mxnet_mpi_lib],
-      cmdclass={'build_ext': custom_build_ext},
+      cmdclass={'build_ext': custom_build_ext, "bdist_wheel": bdist_wheel_abi3},
       # cffi is required for PyTorch
       # If cffi is specified in setup_requires, it will need libffi to be installed on the machine,
       # which is undesirable.  Luckily, `install` action will install cffi before executing build,
