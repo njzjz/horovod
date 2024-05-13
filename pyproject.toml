@@ -1,0 +1,23 @@
+[build-system]
+requires = [
+    "setuptools",
+    'cloudpickle',
+    'psutil',
+    'pyyaml',
+    'packaging',
+    'cmake',
+    'tensorflow-cpu',
+]
+build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel.environment]
+HOROVOD_WITH_TENSORFLOW = "1"
+HOROVOD_WITHOUT_PYTORCH = "1"
+HOROVOD_WITHOUT_MXNET = "1"
+HOROVOD_WITH_MPI = "1"
+HOROVOD_WITHOUT_GLOO = "1"
+CMAKE_PREFIX_PATH="/opt/python/cp38-cp38/"
+
+[tool.cibuildwheel.linux]
+before-all = "/opt/python/cp38-cp38/bin/python -m pip install mpich -i https://pypi.anaconda.org/mpi4py/simple"
+repair-wheel-command = "auditwheel repair --exclude libtensorflow_framework.so.2 --exclude libtensorflow_framework.so.1 --exclude libtensorflow_framework.so --exclude _pywrap_tensorflow_internal.so --exclude libtensorflow_cc.so.2 -w {dest_dir} {wheel}"

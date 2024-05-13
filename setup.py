@@ -28,7 +28,10 @@ import textwrap
 from setuptools import setup, Extension, find_packages
 from setuptools.command.build_ext import build_ext
 
-from horovod import __version__
+from tensorflow import __version__ as tf_version
+
+#from horovod import __version__
+__version__ = f'0.28.1+TF{tf_version}'
 
 _FRAMEWORK_METADATA_FILE = 'horovod/metadata.json'
 
@@ -158,9 +161,9 @@ class custom_build_ext(build_ext):
 require_list = ['cloudpickle', 'psutil', 'pyyaml', 'dataclasses;python_version<"3.7"', 'packaging']
 
 # framework dependencies
-tensorflow_require_list = ['tensorflow']
-tensorflow_cpu_require_list = ['tensorflow-cpu']
-tensorflow_gpu_require_list = ['tensorflow-gpu']
+tensorflow_require_list = [f'tensorflow=={tf_version}']
+tensorflow_cpu_require_list = [f'tensorflow-cpu=={tf_version}']
+tensorflow_gpu_require_list = [f'tensorflow-gpu=={tf_version}']
 keras_require_list = ['keras>=2.0.8,!=2.0.9,!=2.1.0,!=2.1.1']
 # pytorch-lightning 1.3.8 is a stable version to work with horovod
 pytorch_require_list = ['torch']
