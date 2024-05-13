@@ -10,6 +10,9 @@ requires = [
 ]
 build-backend = "setuptools.build_meta"
 
+[tool.cibuildwheel]
+manylinux-x86_64-image = "quay.io/pypa/manylinux_2_28_x86_64"
+
 [tool.cibuildwheel.environment]
 HOROVOD_WITH_TENSORFLOW = "1"
 HOROVOD_WITHOUT_PYTORCH = "1"
